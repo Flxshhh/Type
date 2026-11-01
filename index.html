@@ -77,7 +77,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .kb{width:100%;max-width:860px;background:color-mix(in srgb,var(--key-edge) 55%,var(--bg));border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px}
 .row{display:flex;gap:6px}
 .k{flex:1 1 0;min-width:0;aspect-ratio:auto;height:clamp(26px,5vw,46px);background:var(--key);border-radius:7px;box-shadow:0 2px 0 var(--key-edge);
-  display:flex;align-items:center;justify-content:center;font:500 clamp(10px,1.7vw,16px) var(--body);color:var(--fg);position:relative;transition:transform .08s,background .15s}
+  display:flex;align-items:center;justify-content:center;font:500 clamp(10px,1.7vw,16px) var(--body);color:var(--fg);position:relative;transition:transform .06s}
 .k.mod{font-size:clamp(8px,1.1vw,11px);color:var(--muted);justify-content:flex-start;padding-left:8px}
 .k[data-f="5"]{background:color-mix(in srgb,var(--f5) 15%,var(--key))}
 .k[data-f="4"]{background:color-mix(in srgb,var(--f4) 15%,var(--key))}
@@ -85,9 +85,10 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .k[data-f="2"]{background:color-mix(in srgb,var(--f2) 17%,var(--key))}
 .k[data-f="1"]{background:color-mix(in srgb,var(--f1) 14%,var(--key))}
 .nozones .k[data-f]{background:var(--key)}
-.k.bump::after{content:"";position:absolute;bottom:18%;left:50%;width:22%;height:2px;margin-left:-11%;border-radius:2px;background:var(--muted)}
-.k.home{outline:2px dashed var(--fc);outline-offset:-3px}
-.k.target{background:var(--fc)!important;color:#fff;box-shadow:0 2px 0 var(--key-edge),0 0 0 4px color-mix(in srgb,var(--fc) 30%,transparent);transform:translateY(-1px)}
+.k.bump::after{content:"";position:absolute;bottom:5px;left:50%;width:10px;height:2px;margin-left:-5px;border-radius:2px;background:var(--faint);opacity:.7}
+.k.home{outline:1.5px dashed color-mix(in srgb,var(--fc) 55%,transparent);outline-offset:-4px}
+.k.target{background:var(--fc)!important;color:#fff;font-weight:700;z-index:2;box-shadow:0 2px 0 color-mix(in srgb,var(--fc) 60%,#000),0 0 0 4px color-mix(in srgb,var(--fc) 35%,transparent);transform:scale(1.07)}
+.k.target::after{background:#fff}
 .k.press{transform:translateY(2px);box-shadow:none}
 .k.wrong{background:var(--err)!important;color:#fff}
 .k .heat{position:absolute;left:12%;right:12%;top:4px;height:3px;border-radius:2px;background:var(--err)}
@@ -103,8 +104,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .finger.active{transform:translateY(-12px)}
 .finger.active .nail{fill:color-mix(in srgb,#fff 40%,var(--fc))}
 .palm{fill:var(--hand);stroke:var(--hand-line);stroke-width:2}
-.flabel{font:600 15px var(--mono);fill:var(--muted);text-anchor:middle}
-.flabel.active{fill:var(--fg)}
+.flabel{font:500 14px var(--mono);fill:var(--faint);text-anchor:middle}
+.flabel.active{font-size:24px;font-weight:700;fill:var(--fc)}
 
 .legend{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;font-size:12px;color:var(--muted)}
 .legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
@@ -309,7 +310,7 @@ function buildHands(){
     for(const [n,x,top] of F){
       const id=side+n, rx=side==="L"?x:800-x-W;
       svg+=`<g class="finger" id="fg-${id}" style="--fc:${FCOLOR(id)}"><rect x="${rx}" y="${top}" width="${W}" height="${BOT-top}" rx="18"/><ellipse class="nail" cx="${rx+W/2}" cy="${top+17}" rx="10" ry="11"/></g>`;
-      svg+=`<text class="flabel" id="fl-${id}" x="${rx+W/2}" y="${top-24}">${labels[id]}</text>`;
+      svg+=`<text class="flabel" id="fl-${id}" data-home="${labels[id]}" style="--fc:${FCOLOR(id)}" x="${rx+W/2}" y="${top-24}">${labels[id]}</text>`;
     }
     // ладонь + большой палец
     const px=side==="L"?108:800-108-170;
@@ -338,13 +339,14 @@ function render(){
   // подсказка
   const ch=L[pos], code=CHAR2CODE[S.layout][ch], f=FINGER[code];
   document.querySelectorAll(".k.target,.k.home").forEach(k=>{k.classList.remove("target","home");k.style.removeProperty("--fc")});
-  document.querySelectorAll(".finger.active,.flabel.active").forEach(e=>e.classList.remove("active"));
+  document.querySelectorAll(".finger.active").forEach(e=>e.classList.remove("active"));
+  document.querySelectorAll(".flabel.active").forEach(e=>{e.classList.remove("active");e.textContent=e.dataset.home;});
   if(!code) return;
   const col=FCOLOR(f);
   keyEls[code].classList.add("target"); keyEls[code].style.setProperty("--fc",col);
   const home=HOME[f]; if(home!==code){keyEls[home].classList.add("home");keyEls[home].style.setProperty("--fc",col);}
   if(f==="T"){ document.getElementById("fg-TL").classList.add("active"); document.getElementById("fg-TR").classList.add("active"); }
-  else { document.getElementById("fg-"+f).classList.add("active"); document.getElementById("fl-"+f)?.classList.add("active"); }
+  else { document.getElementById("fg-"+f).classList.add("active"); const lb=document.getElementById("fl-"+f); if(lb){lb.classList.add("active"); lb.textContent=ch;} }
   const label=ch===" "?"пробел":ch.toUpperCase();
   fingerTxt.innerHTML=`<strong>${label}</strong> — ${FNAME[f]}`+(home!==code&&f!=="T"?`, затем вернуть на <strong>${keyEls[home].textContent.toUpperCase()}</strong>`:"");
 }
