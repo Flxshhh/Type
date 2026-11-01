@@ -8,131 +8,111 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600&family=Unbounded:wght@500;700&display=swap">
 <style>
-/* Layout: one working screen — stats strip, text stream, keyboard, hands. Aluminium-and-keycap palette. */
+/* Layout: one dark working screen — stats, letter tiles, keyboard with translucent hands on top.
+   Deliberately single-theme (night navy), like a lit keyboard in a dark room. */
 :root{
-  --bg:#e9ecf1; --panel:#f6f7fa; --key:#ffffff; --key-edge:#cfd4dd;
-  --fg:#1b2130; --muted:#6b7385; --faint:#a3aaba; --err:#d6334a; --ok:#1f8a5b;
-  --accent:#2f5bd8;
-  --f5:#8b5cf6; --f4:#2f80ed; --f3:#16a34a; --f2:#e8890c; --f1:#7c8597;
-  --hand:#f1d9c6; --hand-line:#c9a58b;
+  --bg:#0b1530; --panel:#101d3f; --panel2:#0e1a38;
+  --key:#14285a; --key-line:#2d4c8f; --key-text:#c9d9ff;
+  --fg:#e3ebff; --muted:#8a9dc8; --faint:#4b5f90;
+  --ok:#36e3b0; --err:#ff5470; --fix:#ffb22e; --accent:#59c7ff; --ring:#ffc233;
+  --hand:#c8d6f7;
   --display:"Unbounded","IBM Plex Sans",system-ui,sans-serif;
   --body:"IBM Plex Sans",system-ui,-apple-system,sans-serif;
   --mono:"IBM Plex Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --bg:#12151c; --panel:#191d26; --key:#232836; --key-edge:#0b0d12;
-  --fg:#e7eaf2; --muted:#9097a8; --faint:#5a6173; --err:#ff5c73; --ok:#3fcf8e;
-  --accent:#7d9bff;
-  --f5:#a78bfa; --f4:#5b9cf5; --f3:#34c46a; --f2:#f5a524; --f1:#8a93a6;
-  --hand:#5a4a42; --hand-line:#3a2f2a; color-scheme:dark}}
-:root[data-theme="dark"]{
-  --bg:#12151c; --panel:#191d26; --key:#232836; --key-edge:#0b0d12;
-  --fg:#e7eaf2; --muted:#9097a8; --faint:#5a6173; --err:#ff5c73; --ok:#3fcf8e;
-  --accent:#7d9bff;
-  --f5:#a78bfa; --f4:#5b9cf5; --f3:#34c46a; --f2:#f5a524; --f1:#8a93a6;
-  --hand:#5a4a42; --hand-line:#3a2f2a; color-scheme:dark}
-
 [hidden]{display:none!important}
+*{box-sizing:border-box}
 html,body{min-height:100%}
 body{margin:0;background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;
+  background-image:radial-gradient(1200px 500px at 50% -10%,#16295a 0%,transparent 70%);
   padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:20px 32px}
-.wrap{max-width:980px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
+.wrap{max-width:1000px;margin:0 auto;display:flex;flex-direction:column;gap:18px}
 
 header{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px}
-h1{font-family:var(--display);font-weight:700;font-size:20px;letter-spacing:-.01em;margin:0}
+h1{font-family:var(--display);font-weight:700;font-size:20px;margin:0;letter-spacing:-.01em}
 h1 small{font-family:var(--body);font-weight:400;font-size:13px;color:var(--muted);margin-left:8px;letter-spacing:0}
 .controls{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
-.seg{display:inline-flex;background:var(--panel);border:1px solid var(--key-edge);border-radius:9px;padding:3px;gap:2px}
-.seg button{border:0;background:transparent;color:var(--muted);font:500 13px var(--body);padding:6px 10px;border-radius:6px;cursor:pointer}
-.seg button[aria-pressed="true"]{background:var(--key);color:var(--fg);box-shadow:0 1px 0 var(--key-edge)}
-.chip{border:1px solid var(--key-edge);background:var(--panel);color:var(--fg);font:500 13px var(--body);padding:7px 11px;border-radius:9px;cursor:pointer}
-.chip[aria-pressed="false"]{color:var(--faint)}
+.seg{display:inline-flex;background:var(--panel2);border:1px solid var(--key-line);border-radius:10px;padding:3px;gap:2px}
+.seg button{border:0;background:transparent;color:var(--muted);font:500 13px var(--body);padding:6px 10px;border-radius:7px;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--key);color:var(--fg);box-shadow:inset 0 0 0 1px var(--key-line)}
+.chip{border:1px solid var(--key-line);background:var(--panel2);color:var(--fg);font:500 13px var(--body);padding:7px 11px;border-radius:10px;cursor:pointer}
+.chip[aria-pressed="false"]{color:var(--faint);border-color:color-mix(in srgb,var(--key-line) 50%,transparent)}
 button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--key-edge);border:1px solid var(--key-edge);border-radius:12px;overflow:hidden}
+.stats{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:1px;background:var(--key-line);border:1px solid var(--key-line);border-radius:12px;overflow:hidden}
 .stat{background:var(--panel);padding:10px 14px;display:flex;flex-direction:column;gap:2px;min-width:0}
 .stat b{font:600 22px var(--mono);font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .stat span{font-size:11px;text-transform:uppercase;letter-spacing:.07em;color:var(--muted)}
 .stat em{font-style:normal;font-size:12px;color:var(--faint);font-family:var(--mono)}
 
-.stage{position:relative;background:var(--panel);border:1px solid var(--key-edge);border-radius:14px;padding:22px 24px 18px}
-.lines{font-family:var(--mono);font-size:clamp(16px,3.1vw,27px);line-height:1.75;white-space:pre;overflow:hidden}
-.line{height:1.75em}
-.line.next{color:var(--faint)}
-.line.next2{color:var(--faint);opacity:.55}
-.c{position:relative;color:var(--fg)}
-/* набрано с первой попытки — зелёный, с ошибкой — красный */
-.c.done{color:var(--ok);font-weight:500}
-.c.done.miss{color:var(--err);background:color-mix(in srgb,var(--err) 12%,transparent);border-radius:3px}
-.c.pop{animation:pop .35s ease-out}
-@keyframes pop{0%{background:color-mix(in srgb,var(--ok) 45%,transparent);border-radius:3px}100%{background:transparent}}
-.c.miss.pop{animation:popfix .35s ease-out}
-@keyframes popfix{0%{background:color-mix(in srgb,var(--ok) 45%,transparent)}100%{background:color-mix(in srgb,var(--err) 12%,transparent)}}
-.c.cur{background:color-mix(in srgb,var(--accent) 16%,transparent);border-radius:3px;box-shadow:inset 0 -3px 0 var(--accent)}
-.c.cur.bad{background:var(--err);color:#fff;box-shadow:none;animation:shake .18s}
-@keyframes shake{25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
-.hintline{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:10px;font-size:13px;color:var(--muted)}
+/* --- плитки букв --- */
+.stage{position:relative;padding:8px 0 4px}
+.tiles{--t:clamp(26px,4.3vw,48px);display:flex;flex-wrap:wrap;justify-content:center;gap:7px 6px;padding-bottom:22px;min-height:calc(var(--t)*1.15 + 22px)}
+.tile{position:relative;width:var(--t);height:calc(var(--t)*1.15);border-radius:calc(var(--t)*.22);
+  display:flex;align-items:center;justify-content:center;font:500 calc(var(--t)*.56) var(--mono);
+  color:var(--muted);background:color-mix(in srgb,var(--key) 70%,transparent);border:2px solid color-mix(in srgb,var(--key-line) 80%,transparent)}
+.tile.sp{width:calc(var(--t)*.55);background:transparent;border-color:transparent}
+.tile.sp::before{content:"";position:absolute;bottom:28%;left:22%;right:22%;height:2px;border-radius:2px;background:var(--faint)}
+.tile.cur{color:var(--fg);border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,var(--key));box-shadow:0 0 18px color-mix(in srgb,var(--accent) 35%,transparent)}
+.tile.cur::after{content:"";position:absolute;left:12%;right:12%;bottom:-11px;height:4px;border-radius:3px;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.tile.sp.cur{border-color:var(--accent)}
+.tile.cur.bad{color:var(--err);border-color:var(--err);background:color-mix(in srgb,var(--err) 18%,var(--key));box-shadow:0 0 18px color-mix(in srgb,var(--err) 45%,transparent);animation:shake .18s}
+.tile.cur.bad::after{background:var(--err);box-shadow:0 0 10px var(--err)}
+.tile.ok{color:var(--ok);border-color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,var(--key));box-shadow:0 0 12px color-mix(in srgb,var(--ok) 25%,transparent)}
+.tile.fix{color:var(--fix);border-color:var(--fix);background:color-mix(in srgb,var(--fix) 10%,var(--key));box-shadow:0 0 12px color-mix(in srgb,var(--fix) 25%,transparent)}
+.tile.ok::after,.tile.fix::after{content:"✓";position:absolute;bottom:-21px;left:0;right:0;text-align:center;font:700 14px var(--body)}
+.tile.sp.ok,.tile.sp.fix{background:transparent;box-shadow:none;border-color:transparent}
+.tile.sp.ok::before{background:var(--ok)}.tile.sp.fix::before{background:var(--fix)}
+.tile.sp.ok::after,.tile.sp.fix::after{content:none}
+.tile.pop{animation:pop .25s ease-out}
+@keyframes pop{0%{transform:scale(1.14)}100%{transform:scale(1)}}
+@keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
+
+.progress{height:3px;border-radius:2px;background:color-mix(in srgb,var(--key-line) 60%,transparent);max-width:760px;margin:6px auto 0;overflow:hidden}
+.progress i{display:block;height:100%;width:0;background:var(--accent);box-shadow:0 0 8px var(--accent);transition:width .12s}
+.next{text-align:center;font:400 clamp(14px,2vw,18px) var(--mono);color:var(--faint);margin-top:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hintline{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 20px;margin-top:10px;font-size:13px;color:var(--muted)}
 .hintline strong{color:var(--fg);font-weight:600}
 .warn{color:var(--err);font-weight:500}
+.overlay{position:absolute;inset:-6px;border-radius:14px;display:flex;align-items:center;justify-content:center;
+  background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(3px);cursor:pointer;font-weight:500;text-align:center;padding:16px}
 
-.overlay{position:absolute;inset:0;border-radius:14px;display:flex;align-items:center;justify-content:center;
-  background:color-mix(in srgb,var(--panel) 82%,transparent);backdrop-filter:blur(3px);cursor:pointer;font-weight:500;color:var(--fg);text-align:center;padding:16px}
-
-.kb-area{display:flex;flex-direction:column;gap:6px;align-items:center}
-.kb{width:100%;max-width:860px;background:color-mix(in srgb,var(--key-edge) 55%,var(--bg));border-radius:14px;padding:10px;display:flex;flex-direction:column;gap:6px}
+/* --- клавиатура + руки поверх --- */
+.kbwrap{position:relative;width:100%;max-width:880px;margin:0 auto;overflow:hidden;padding-bottom:clamp(40px,9vw,96px);border-radius:16px}
+.kb{position:relative;background:color-mix(in srgb,var(--panel) 80%,#000);border:1.5px solid var(--key-line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:6px}
 .row{display:flex;gap:6px}
-.k{flex:1 1 0;min-width:0;aspect-ratio:auto;height:clamp(26px,5vw,46px);background:var(--key);border-radius:7px;box-shadow:0 2px 0 var(--key-edge);
-  display:flex;align-items:center;justify-content:center;font:500 clamp(10px,1.7vw,16px) var(--body);color:var(--fg);position:relative;transition:transform .06s}
-.k.mod{font-size:clamp(8px,1.1vw,11px);color:var(--muted);justify-content:flex-start;padding-left:8px}
-.k[data-f="5"]{background:color-mix(in srgb,var(--f5) 15%,var(--key))}
-.k[data-f="4"]{background:color-mix(in srgb,var(--f4) 15%,var(--key))}
-.k[data-f="3"]{background:color-mix(in srgb,var(--f3) 15%,var(--key))}
-.k[data-f="2"]{background:color-mix(in srgb,var(--f2) 17%,var(--key))}
-.k[data-f="1"]{background:color-mix(in srgb,var(--f1) 14%,var(--key))}
-.nozones .k[data-f]{background:var(--key)}
-.k.bump::after{content:"";position:absolute;bottom:5px;left:50%;width:10px;height:2px;margin-left:-5px;border-radius:2px;background:var(--faint);opacity:.7}
-.k.home{outline:1.5px dashed color-mix(in srgb,var(--fc) 55%,transparent);outline-offset:-4px}
-.k.target{background:var(--fc)!important;color:#fff;font-weight:700;z-index:2;box-shadow:0 2px 0 color-mix(in srgb,var(--fc) 60%,#000),0 0 0 4px color-mix(in srgb,var(--fc) 35%,transparent);transform:scale(1.07)}
-.k.target::after{background:#fff}
-.k.press{transform:translateY(2px);box-shadow:none;background:var(--ok)!important;color:#fff}
-.k.wrong{background:var(--err)!important;color:#fff}
-.k .heat{position:absolute;left:12%;right:12%;top:4px;height:3px;border-radius:2px;background:var(--err)}
-.nohint .k.target{background:var(--key)!important;color:var(--fg);box-shadow:0 2px 0 var(--key-edge);transform:none}
-.nohint .k.home{outline:none}
-
-.hands{width:100%;max-width:700px;margin-top:-4px}
-.hands svg{width:100%;height:auto;display:block}
-.finger rect,.finger .palm{fill:var(--hand);stroke:var(--hand-line);stroke-width:2}
-.finger{transition:transform .18s ease}
-.finger .nail{fill:color-mix(in srgb,var(--hand-line) 35%,var(--hand))}
-.finger.active rect{fill:var(--fc);stroke:color-mix(in srgb,var(--fc) 70%,#000)}
-.finger.active{transform:translateY(-12px)}
-.finger.active .nail{fill:color-mix(in srgb,#fff 40%,var(--fc))}
-.palm{fill:var(--hand);stroke:var(--hand-line);stroke-width:2}
-.flabel{font:500 14px var(--mono);fill:var(--faint);text-anchor:middle}
-.flabel.active{font-size:24px;font-weight:700;fill:var(--fc)}
-
-.legend{display:flex;flex-wrap:wrap;gap:6px 16px;justify-content:center;font-size:12px;color:var(--muted)}
-.legend i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-right:5px;vertical-align:-1px}
+.k{flex:1 1 0;min-width:0;height:clamp(26px,5vw,48px);background:var(--key);border:1.5px solid color-mix(in srgb,var(--key-line) 75%,transparent);border-radius:8px;
+  display:flex;align-items:center;justify-content:center;font:600 clamp(10px,1.7vw,17px) var(--body);color:var(--key-text);position:relative;transition:transform .06s}
+.k.mod{font-size:clamp(8px,1.1vw,11px);color:var(--muted);font-weight:500;justify-content:flex-start;padding-left:8px}
+.k.bump::after{content:"";position:absolute;bottom:5px;left:50%;width:10px;height:2px;margin-left:-5px;border-radius:2px;background:currentColor;opacity:.55}
+.k.target{background:var(--accent);color:#06203a;border-color:var(--accent);box-shadow:0 0 16px color-mix(in srgb,var(--accent) 60%,transparent);z-index:1}
+.k.wrongstay{background:var(--err)!important;color:#fff!important;border-color:var(--err)!important;box-shadow:0 0 16px color-mix(in srgb,var(--err) 60%,transparent)}
+.k.press{transform:translateY(2px);background:var(--ok)!important;color:#06261c!important;border-color:var(--ok)!important}
+.k .heat{position:absolute;left:14%;right:14%;top:3px;height:3px;border-radius:2px;background:var(--err)}
+.nohint .k.target{background:var(--key);color:var(--key-text);border-color:color-mix(in srgb,var(--key-line) 75%,transparent);box-shadow:none}
+#handsSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
+.hand{fill:var(--hand);stroke:var(--hand);stroke-linecap:round;stroke-linejoin:round}
+.ringp{fill:none;stroke:var(--ring);stroke-linecap:round;filter:drop-shadow(0 0 4px color-mix(in srgb,var(--ring) 70%,transparent))}
+.nohint .ringp{display:none}
 
 .foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
 .weak{display:flex;gap:6px;align-items:center;flex-wrap:wrap}
-.weak kbd{font:600 13px var(--mono);background:var(--key);border:1px solid var(--key-edge);border-bottom-width:2px;border-radius:5px;padding:1px 6px;color:var(--fg)}
+.weak kbd{font:600 13px var(--mono);background:var(--key);border:1px solid var(--key-line);border-radius:5px;padding:1px 6px;color:var(--fg)}
 .weak kbd small{color:var(--err);font-weight:500;margin-left:3px}
-kbd.plain{font:500 12px var(--mono);background:var(--key);border:1px solid var(--key-edge);border-radius:4px;padding:0 5px}
+kbd.plain{font:500 12px var(--mono);background:var(--key);border:1px solid var(--key-line);border-radius:4px;padding:0 5px;color:var(--fg)}
 
 @media (max-width:640px){
   .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
   .stat:nth-child(n+4){display:none}
-  .stage{padding:16px}
   .row{gap:3px}.kb{gap:3px;padding:6px}
-  .k.mod{padding-left:3px}
+  .k{border-radius:5px}.k.mod{padding-left:3px}
+  .tiles{gap:6px 4px}
 }
-@media (prefers-reduced-motion:reduce){.finger,.k{transition:none}.c.cur.bad,.c.pop{animation:none}}
+@media (prefers-reduced-motion:reduce){.k{transition:none}.tile.cur.bad,.tile.pop{animation:none}}
 </style>
 </head>
 <body>
-
 <div class="wrap">
   <header>
     <h1>Слепая печать <small>бесконечный поток, без таймера</small></h1>
@@ -142,8 +122,9 @@ kbd.plain{font:500 12px var(--mono);background:var(--key);border:1px solid var(-
         <button id="lay-en" data-v="en">English</button>
       </div>
       <div class="seg" id="levelSeg" role="group" aria-label="Уровень"></div>
-      <button class="chip" id="tHint" aria-pressed="true" title="Подсвечивать нужную клавишу">Подсказка</button>
+      <button class="chip" id="tHint" aria-pressed="true" title="Подсвечивать клавишу и палец">Подсказка</button>
       <button class="chip" id="tHands" aria-pressed="true">Руки</button>
+      <button class="chip" id="tSound" aria-pressed="true">Звук</button>
       <button class="chip" id="reset">Сбросить</button>
     </div>
   </header>
@@ -151,31 +132,25 @@ kbd.plain{font:500 12px var(--mono);background:var(--key);border:1px solid var(-
   <section class="stats" aria-label="Статистика">
     <div class="stat"><span>Скорость сейчас</span><b id="sNow">—</b><em id="sNowW">зн/мин</em></div>
     <div class="stat"><span>Средняя</span><b id="sAvg">—</b><em id="sAvgW">зн/мин</em></div>
-    <div class="stat"><span>Точность</span><b id="sAcc">—</b><em id="sAccD">с первой попытки</em></div>
+    <div class="stat"><span>Точность</span><b id="sAcc">—</b><em>с первой попытки</em></div>
     <div class="stat"><span>Набрано</span><b id="sCnt">0</b><em id="sErr">ошибок: 0</em></div>
     <div class="stat"><span>В работе</span><b id="sTime">0:00</b><em id="sBest">рекорд: —</em></div>
   </section>
 
   <section class="stage" id="stage">
-    <div class="lines" id="lines" aria-live="off"></div>
+    <div class="tiles" id="tiles" aria-live="off"></div>
+    <div class="progress"><i id="prog"></i></div>
+    <div class="next" id="next"></div>
     <div class="hintline">
-      <span id="fingerTxt">Положи пальцы на <strong>Ф Ы В А</strong> и <strong>О Л Д Ж</strong></span>
+      <span id="fingerTxt"></span>
       <span id="layWarn" class="warn" hidden></span>
     </div>
     <div class="overlay" id="overlay">Кликни сюда и начинай печатать. Ошибся — нажимай верную клавишу, пока не попадёшь.</div>
   </section>
 
-  <section class="kb-area">
+  <section class="kbwrap" id="kbwrap">
     <div class="kb" id="kb"></div>
-    <div class="hands" id="hands"></div>
-    <div class="legend">
-      <span><i style="background:var(--f5)"></i>мизинцы</span>
-      <span><i style="background:var(--f4)"></i>безымянные</span>
-      <span><i style="background:var(--f3)"></i>средние</span>
-      <span><i style="background:var(--f2)"></i>указательные</span>
-      <span><i style="background:var(--f1)"></i>большие</span>
-      <span>пунктир — домашняя клавиша пальца</span>
-    </div>
+    <svg id="handsSvg" aria-hidden="true"></svg>
   </section>
 
   <div class="foot">
@@ -186,7 +161,7 @@ kbd.plain{font:500 12px var(--mono);background:var(--key);border:1px solid var(-
 
 <script>
 (()=>{
-// ---------- Данные ----------
+// ================= Данные =================
 const ROWS=[
  [["Backquote","`","ё"],["Digit1","1"],["Digit2","2"],["Digit3","3"],["Digit4","4"],["Digit5","5"],["Digit6","6"],["Digit7","7"],["Digit8","8"],["Digit9","9"],["Digit0","0"],["Minus","-"],["Equal","="],["Backspace","delete",null,1.5,1]],
  [["Tab","tab",null,1.5,1],["KeyQ","q","й"],["KeyW","w","ц"],["KeyE","e","у"],["KeyR","r","к"],["KeyT","t","е"],["KeyY","y","н"],["KeyU","u","г"],["KeyI","i","ш"],["KeyO","o","щ"],["KeyP","p","з"],["BracketLeft","[","х"],["BracketRight","]","ъ"],["Backslash","\\"]],
@@ -194,7 +169,7 @@ const ROWS=[
  [["ShiftLeft","shift",null,2.25,1],["KeyZ","z","я"],["KeyX","x","ч"],["KeyC","c","с"],["KeyV","v","м"],["KeyB","b","и"],["KeyN","n","т"],["KeyM","m","ь"],["Comma",",","б"],["Period",".","ю"],["Slash","/","."],["ShiftRight","shift",null,2.25,1]],
  [["Fn","fn",null,1,1],["CtrlL","control",null,1,1],["AltL","option",null,1,1],["MetaL","command",null,1.25,1],["Space","",null,5,0],["MetaR","command",null,1.25,1],["AltR","option",null,1,1],["Arrows","◂ ▴▾ ▸",null,3,1]]
 ];
-const FINGER={}; // code -> "L5".."R5","T"
+const FINGER={};
 const put=(f,list)=>list.split(" ").forEach(c=>FINGER[c]=f);
 put("L5","Backquote Digit1 KeyQ KeyA KeyZ Tab CapsLock ShiftLeft");
 put("L4","Digit2 KeyW KeyS KeyX");
@@ -205,38 +180,75 @@ put("R3","Digit8 KeyI KeyK Comma");
 put("R4","Digit9 KeyO KeyL Period");
 put("R5","Digit0 Minus Equal KeyP BracketLeft BracketRight Backslash Semicolon Quote Slash Enter ShiftRight Backspace");
 put("T","Space");
-const HOME={L5:"KeyA",L4:"KeyS",L3:"KeyD",L2:"KeyF",R2:"KeyJ",R3:"KeyK",R4:"KeyL",R5:"Semicolon",T:"Space"};
+const HOME={L5:"KeyA",L4:"KeyS",L3:"KeyD",L2:"KeyF",R2:"KeyJ",R3:"KeyK",R4:"KeyL",R5:"Semicolon"};
 const FNAME={L5:"левый мизинец",L4:"левый безымянный",L3:"левый средний",L2:"левый указательный",R2:"правый указательный",R3:"правый средний",R4:"правый безымянный",R5:"правый мизинец",T:"большой палец"};
-const FCOLOR=f=>f==="T"?"var(--f1)":`var(--f${f[1]})`;
 
-// символ -> код клавиши для каждой раскладки
 const CHAR2CODE={ru:{" ":"Space"},en:{" ":"Space"}};
 ROWS.flat().forEach(([code,en,ru,,mod])=>{ if(mod) return;
   if(/^[a-z]$/.test(en)) CHAR2CODE.en[en]=code;
   if(ru && /^[а-я]$/.test(ru)) CHAR2CODE.ru[ru]=code; });
 const RU_ALL="йцукенгшщзхъфывапролджэячсмитьбю", EN_ALL="qwertyuiopasdfghjklzxcvbnm";
-
 const LEVELS={
  ru:[{n:"Основной ряд",l:"фывапролджэ"},{n:"+ верхний",l:"фывапролджэйцукенгшщзхъ"},{n:"Все буквы",l:RU_ALL}],
  en:[{n:"Home row",l:"asdfghjkl"},{n:"+ top row",l:"asdfghjklqwertyuiop"},{n:"All letters",l:EN_ALL}]
 };
 const WORDS={
 ru:`и в не на я он что с а как это по но они к у мы из за вы так же от все она его только или да ты еще бы вот год такой человек нет время когда если знать уже один день свой первый дело жизнь рука раз работа там слово надо место где лицо друг глаз потом вопрос дом сторона страна мир случай голова ребенок сила конец вид система часть город женщина деньги земля машина вода отец проблема час право нога решение дверь образ история власть закон война голос тысяча книга результат ночь стол имя область статья число компания народ жена группа развитие процесс суд условие средство начало свет пора путь душа уровень форма связь минута улица вечер качество мысль дорога мать действие месяц язык любовь взгляд мама век школа цель общество порядок момент театр письмо утро помощь роль рубль смысл квартира внимание тело труд сын мера рынок задача окно разговор центр ответ муж автор стена интерес правило мужчина идея партия ряд вместе новый большой хороший главный последний русский должен лучший белый высокий молодой другой старый простой близкий сильный легкий тихий быстро медленно правда лапа папа плов двор жар рад дал лад два вол пар лава ода дар жало подвал провода дрова пара рада волна лодка полка палка рыба река лес поле небо море гора снег луна звезда ветер огонь сад хлеб сыр мясо суп чай кофе молоко яблоко груша сок ложка вилка нож тарелка чашка стул диван кровать лампа ключ замок карта ручка бумага тетрадь урок класс учитель ученик экзамен формула сумма корень угол линия точка круг квадрат график функция предел производная интеграл матрица вектор код программа данные массив цикл переменная ошибка тест сервер клавиша палец текст скорость точность поезд вагон билет экран звук песня фильм кино спорт мяч бег неделя завтра вчера сегодня здесь теперь очень много мало всегда никогда снова почему потому зачем сколько куда откуда`,
-en:`the be to of and a in that have it for not on with he as you do at this but his by from they we say her she or an will my one all would there their what so up out if about who get which go me when make can like time no just him know take people into year your good some could them see other than then now look only come its over think also back after use two how our work first well way even new want because any these give day most us life hand part place case week company system program question work number night point home water room mother area money story fact month lot right study book eye job word business issue side kind head house service friend father power hour game line end member law car city name team minute idea body back parent face others level office door health person art war history party result change morning reason research girl guy moment air teacher force education foot boy age policy process music market sense nation plan college interest death experience effect class control field development role effort rate heart drug show leader light voice wife police mind price report decision son view relationship town road arm difference value building action model season society tax director position player record paper space ground form event official matter center couple site project activity star table need court oil situation cost industry figure street image phone data picture practice piece land product doctor wall patient worker news test movie north love support technology step baby computer type attention film tree source organization hair window evidence population truth song`
+en:`the be to of and a in that have it for not on with he as you do at this but his by from they we say her she or an will my one all would there their what so up out if about who get which go me when make can like time no just him know take people into year your good some could them see other than then now look only come its over think also back after use two how our work first well way even new want because any these give day most us life hand part place case week company system program question number night point home water room mother area money story fact month lot right study book eye job word business issue side kind head house service friend father power hour game line end member law car city name team minute idea body parent face others level office door health person art war history party result change morning reason research girl guy moment air teacher force education foot boy age policy process music market sense nation plan college interest death experience effect class control field development role effort rate heart show leader light voice wife police mind price report decision son view relationship town road arm difference value building action model season society tax director position player record paper space ground form event official matter center couple site project activity star table need court oil situation cost industry figure street image phone data picture practice piece land product doctor wall patient worker news test movie north love support technology step baby computer type attention film tree source organization hair window evidence population truth song`
 };
 
-// ---------- Сохранение ----------
+// ================= Хранилище =================
 const store={get(k,d){try{const v=localStorage.getItem("tt_"+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
              set(k,v){try{localStorage.setItem("tt_"+k,JSON.stringify(v))}catch(e){}}};
-
-let S={layout:store.get("layout","ru"),level:store.get("level",2),hint:store.get("hint",true),hands:store.get("hands",true)};
+let S={layout:store.get("layout","ru"),level:store.get("level",2),hint:store.get("hint",true),hands:store.get("hands",true),sound:store.get("sound",true)};
 let keyStats=store.get("keyStats_"+S.layout,{}); // буква -> [попаданий, промахов]
 let best=store.get("best",{ru:0,en:0});
 
-// ---------- Генерация слов ----------
+// ================= Звук (Web Audio, без файлов) =================
+let actx=null,master=null,noiseBuf=null;
+function audio(){
+  if(!actx){
+    const AC=window.AudioContext||window.webkitAudioContext; if(!AC) return null;
+    actx=new AC(); master=actx.createGain(); master.gain.value=.55; master.connect(actx.destination);
+    noiseBuf=actx.createBuffer(1,actx.sampleRate*.12,actx.sampleRate);
+    const d=noiseBuf.getChannelData(0); for(let i=0;i<d.length;i++) d[i]=Math.random()*2-1;
+  }
+  if(actx.state==="suspended") actx.resume();
+  return actx;
+}
+// короткий всплеск шума через полосовой фильтр — «щелчок» переключателя
+function burst(c,t,freq,q,vol,dur){
+  const n=c.createBufferSource(); n.buffer=noiseBuf;
+  const f=c.createBiquadFilter(); f.type="bandpass"; f.frequency.value=freq; f.Q.value=q;
+  const g=c.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.002); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  n.connect(f).connect(g).connect(master); n.start(t); n.stop(t+dur+.02);
+}
+// низкий «тук» корпуса — синус с падающей частотой
+function thock(c,t,f0,f1,vol,dur){
+  const o=c.createOscillator(); o.type="sine"; o.frequency.setValueAtTime(f0,t); o.frequency.exponentialRampToValueAtTime(f1,t+dur);
+  const g=c.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.003); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
+  o.connect(g).connect(master); o.start(t); o.stop(t+dur+.02);
+}
+function soundKey(isSpace){
+  if(!S.sound) return; const c=audio(); if(!c) return; const t=c.currentTime, r=.92+Math.random()*.16;
+  if(isSpace){ burst(c,t,1500*r,1.4,.45,.045); thock(c,t,150,70,.5,.09); burst(c,t+.05,2600*r,2,.08,.02); }
+  else { burst(c,t,3400*r,1.6,.55,.03); thock(c,t,230*r,120,.32,.055); burst(c,t+.042,4200*r,2.5,.09,.015); }
+}
+function soundError(){
+  if(!S.sound) return; const c=audio(); if(!c) return; const t=c.currentTime;
+  const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=1100; lp.connect(master);
+  [[220,0,.08],[156,.085,.16]].forEach(([f,dt,dur])=>{
+    const o=c.createOscillator(); o.type="square"; o.frequency.value=f;
+    const g=c.createGain(); g.gain.setValueAtTime(.0001,t+dt); g.gain.exponentialRampToValueAtTime(.16,t+dt+.008); g.gain.exponentialRampToValueAtTime(.0001,t+dt+dur);
+    o.connect(g).connect(lp); o.start(t+dt); o.stop(t+dt+dur+.02);
+  });
+}
+
+// ================= Генерация слов =================
+let P=null,lineMax=24;
 function pool(){
   const allowed=new Set(LEVELS[S.layout][S.level].l);
-  const words=[...new Set(WORDS[S.layout].split(/\s+/))].filter(w=>w&&[...w].every(c=>allowed.has(c)));
+  const words=[...new Set(WORDS[S.layout].split(/\s+/))].filter(w=>w&&w.length<lineMax&&[...w].every(c=>allowed.has(c)));
   return {words,allowed:[...allowed]};
 }
 function pseudo(allowed){
@@ -247,47 +259,53 @@ function pseudo(allowed){
   for(let i=0;i<n;i++){ w+=(cs.length?pick(cs):"")+(vs.length?pick(vs):pick(allowed)); if(Math.random()<.25&&cs.length) w+=pick(cs); }
   return w;
 }
-function weight(w){ // слова со слабыми буквами выпадают чаще
-  let s=1; for(const c of w){const st=keyStats[c]; if(st&&st[0]+st[1]>=5) s+=6*st[1]/(st[0]+st[1]);} return s;
-}
-let P=null;
+function weight(w){ let s=1; for(const c of w){const st=keyStats[c]; if(st&&st[0]+st[1]>=5) s+=6*st[1]/(st[0]+st[1]);} return s; }
 function nextWord(){
   const {words,allowed}=P;
   if(words.length<40 && Math.random()<(words.length<12?.8:.5)) return pseudo(allowed);
-  // взвешенный выбор из 12 случайных кандидатов
-  let bestW=null,tot=0;
-  for(let i=0;i<12;i++){const w=words[Math.random()*words.length|0], wt=weight(w); tot+=wt; if(Math.random()*tot<wt) bestW=w;}
-  return bestW;
+  let pickW=null,tot=0;
+  for(let i=0;i<12;i++){const w=words[Math.random()*words.length|0], wt=weight(w); tot+=wt; if(Math.random()*tot<wt) pickW=w;}
+  return pickW;
 }
 let lastWord="";
-function makeLine(max=36){
+function makeLine(){
   let line="";
-  while(true){ let w; do{w=nextWord()}while(w===lastWord); lastWord=w;
-    if(line.length+w.length+1>max && line) break; line+=w+" "; }
+  for(let guard=0;guard<50;guard++){ let w; do{w=nextWord()}while(w===lastWord); lastWord=w;
+    if(line.length+w.length+1>lineMax && line) break; line+=w+" "; }
   return line;
 }
+function measureLineMax(){ // сколько плиток помещается в ряд
+  const tiles=$("tiles"), probe=document.createElement("div"); probe.className="tile"; probe.style.visibility="hidden";
+  tiles.appendChild(probe); const tw=probe.offsetWidth; probe.remove();
+  const gap=parseFloat(getComputedStyle(tiles).columnGap)||6;
+  lineMax=Math.max(10,Math.min(30,Math.floor((tiles.clientWidth+gap)/(tw+gap))));
+}
 
-// ---------- Состояние сессии ----------
-let lines=[],pos=0,missed=new Set(),badNow=false,popNow=false;
+// ================= Сессия =================
+let lines=[],pos=0,missed=new Set(),badNow=false,popNow=false,wrongCode=null;
 let typed=0,errChars=0,errPresses=0,correct=0,activeMs=0,lastT=0,recent=[];
 function newSession(){
-  P=pool(); lines=[makeLine(),makeLine(),makeLine()]; pos=0; missed=new Set(); badNow=false;
+  measureLineMax(); P=pool(); lines=[makeLine(),makeLine()]; pos=0; missed=new Set(); badNow=false; popNow=false; setWrong(null);
   typed=errChars=errPresses=correct=activeMs=0; lastT=0; recent=[];
   render(); updateStats();
 }
 
-// ---------- Клавиатура ----------
-const kbEl=document.getElementById("kb"), keyEls={};
+// ================= Клавиатура =================
+const $=id=>document.getElementById(id);
+const kbEl=$("kb"), keyEls={};
 function buildKb(){
   kbEl.innerHTML="";
   ROWS.forEach(r=>{const row=document.createElement("div");row.className="row";
     r.forEach(([code,en,ru,w=1,mod])=>{const k=document.createElement("div");k.className="k"+(mod?" mod":"");
-      k.style.flexGrow=w; const f=FINGER[code]; if(f) k.dataset.f=f==="T"?"1":f[1];
-      k.textContent=mod?en:(S.layout==="ru"&&ru?ru:en);
+      k.style.flexGrow=w; k.textContent=mod?en:(S.layout==="ru"&&ru?ru:en).toUpperCase();
       if(code==="KeyF"||code==="KeyJ") k.classList.add("bump");
       keyEls[code]=k; row.appendChild(k);});
     kbEl.appendChild(row);});
   paintHeat();
+}
+function setWrong(code){
+  if(wrongCode&&keyEls[wrongCode]) keyEls[wrongCode].classList.remove("wrongstay");
+  wrongCode=code; if(code&&keyEls[code]) keyEls[code].classList.add("wrongstay");
 }
 function paintHeat(){
   Object.values(keyEls).forEach(k=>k.querySelector(".heat")?.remove());
@@ -299,64 +317,110 @@ function paintHeat(){
   }
   const list=Object.entries(keyStats).filter(([c,[h,m]])=>h+m>=8&&m/(h+m)>=.05&&c!==" ")
      .sort((a,b)=>b[1][1]/(b[1][0]+b[1][1])-a[1][1]/(a[1][0]+a[1][1])).slice(0,6);
-  const weak=document.getElementById("weak");
-  weak.innerHTML=list.length?"Слабые клавиши: "+list.map(([c,[h,m]])=>`<kbd>${c}<small>${Math.round(100*m/(h+m))}%</small></kbd>`).join(""):"Слабые клавиши появятся после пары минут практики.";
+  $("weak").innerHTML=list.length?"Слабые клавиши: "+list.map(([c,[h,m]])=>`<kbd>${c}<small>${Math.round(100*m/(h+m))}%</small></kbd>`).join(""):"Слабые клавиши появятся после пары минут практики.";
 }
 
-// ---------- Руки (SVG) ----------
-const handsEl=document.getElementById("hands");
+// ================= Руки поверх клавиатуры =================
+// Каждый палец — толстая линия от костяшки до кончика. Кончик лежит на домашней клавише
+// и плавно тянется к нужной. Вся рука рисуется в группе с общей прозрачностью.
+const svg=$("handsSvg"), kbwrap=$("kbwrap"), NS="http://www.w3.org/2000/svg";
+const FINGERS=["L5","L4","L3","L2","R2","R3","R4","R5","TL","TR"];
+let G=null; // геометрия
+const tip={}, goal={}; let activeF=[];
+function el(tag,attrs,parent){const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);parent&&parent.appendChild(e);return e;}
+function center(code){const w=kbwrap.getBoundingClientRect(),r=keyEls[code].getBoundingClientRect();
+  return {x:r.left-w.left+r.width/2,y:r.top-w.top+r.height/2,w:r.width,h:r.height,l:r.left-w.left};}
 function buildHands(){
-  // геометрия левой руки; правая — зеркало относительно x=400
-  const F=[["5",112,100],["4",154,72],["3",196,60],["2",238,76]], W=36, BOT=185;
-  const labels={ru:{L5:"ф",L4:"ы",L3:"в",L2:"а",R2:"о",R3:"л",R4:"д",R5:"ж"},en:{L5:"a",L4:"s",L3:"d",L2:"f",R2:"j",R3:"k",R4:"l",R5:";"}}[S.layout];
-  let svg=`<svg viewBox="0 0 800 235" role="img" aria-label="Руки: подсвечен палец, которым нужно нажать клавишу">`;
-  for(const side of ["L","R"]){
-    const X=x=>side==="L"?x:800-x;
-    for(const [n,x,top] of F){
-      const id=side+n, rx=side==="L"?x:800-x-W;
-      svg+=`<g class="finger" id="fg-${id}" style="--fc:${FCOLOR(id)}"><rect x="${rx}" y="${top}" width="${W}" height="${BOT-top}" rx="18"/><ellipse class="nail" cx="${rx+W/2}" cy="${top+17}" rx="10" ry="11"/></g>`;
-      svg+=`<text class="flabel" id="fl-${id}" data-home="${labels[id]}" style="--fc:${FCOLOR(id)}" x="${rx+W/2}" y="${top-24}">${labels[id]}</text>`;
-    }
-    // ладонь + большой палец
-    const px=side==="L"?108:800-108-170;
-    const tx=side==="L"?244:800-244-34, ang=side==="L"?52:-52, cx=X(261);
-    svg+=`<g class="finger" id="fg-T${side}" style="--fc:var(--f1)"><rect x="${tx}" y="118" width="34" height="88" rx="17" transform="rotate(${ang} ${cx} 206)"/></g>`;
-    svg+=`<rect class="palm" x="${px}" y="150" width="170" height="80" rx="38"/>`;
-    svg+=`<rect x="${px+3}" y="150" width="164" height="38" fill="var(--hand)"/>`; // прячет стык пальцев с ладонью
+  const W=kbwrap.clientWidth,H=kbwrap.clientHeight; svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.innerHTML="";
+  const f=center("KeyF"), kw=f.w, kh=f.h, fw=kw*.74, sp=center("Space");
+  const LEN={5:2.5,4:3.0,3:3.2,2:3.0}, DX={5:.5,4:.25,3:.05,2:-.12};
+  G={fw,knuckle:{},home:{},thumbRoot:{},palms:[]};
+  for(const id of ["L5","L4","L3","L2","R2","R3","R4","R5"]){
+    const h=center(HOME[id]), n=+id[1], s=id[0]==="L"?1:-1;
+    G.home[id]={x:h.x,y:h.y};
+    G.knuckle[id]={x:h.x+DX[n]*kw*s,y:h.y+LEN[n]*kh};
   }
-  svg+=`</svg>`;
-  handsEl.innerHTML=svg;
-  handsEl.hidden=!S.hands;
+  for(const s of ["L","R"]){
+    const ids=s==="L"?["L5","L4","L3","L2"]:["R2","R3","R4","R5"];
+    const xs=ids.map(i=>G.knuckle[i].x), top=Math.min(...ids.map(i=>G.knuckle[i].y))-kh*.15;
+    G.palms.push({x:Math.min(...xs)-fw*.75,y:top,w:Math.max(...xs)-Math.min(...xs)+fw*1.5,h:H-top+kh*2});
+    const idx=G.knuckle[s+"2"], sg=s==="L"?1:-1;
+    G.thumbRoot["T"+s]={x:idx.x+sg*fw*.2,y:idx.y+kh*1.1};
+    G.home["T"+s]={x:sp.l+sp.w*(s==="L"?.3:.7),y:sp.y};
+  }
+  // маска: кольцо-контур вокруг активного пальца
+  const defs=el("defs",{},svg), mask=el("mask",{id:"ringMask",maskUnits:"userSpaceOnUse",x:0,y:0,width:W,height:H},defs);
+  el("rect",{x:0,y:0,width:W,height:H,fill:"#fff"},mask);
+  G.holes=[el("path",{stroke:"#000","stroke-width":fw,"stroke-linecap":"round",fill:"none"},mask),el("path",{stroke:"#000","stroke-width":fw*.95,"stroke-linecap":"round",fill:"none"},mask)];
+  // плавное растворение ладоней к нижнему краю
+  const kbB=$("kb").offsetTop+$("kb").offsetHeight;
+  const lg=el("linearGradient",{id:"fadeG",gradientUnits:"userSpaceOnUse",x1:0,y1:kbB-kh*.3,x2:0,y2:H},defs);
+  el("stop",{offset:0,"stop-color":"#fff"},lg); el("stop",{offset:1,"stop-color":"#000"},lg);
+  const fm=el("mask",{id:"fadeMask",maskUnits:"userSpaceOnUse",x:0,y:0,width:W,height:H},defs);
+  el("rect",{x:0,y:0,width:W,height:H,fill:"url(#fadeG)"},fm);
+  const g=el("g",{class:"hand",opacity:.5,mask:"url(#fadeMask)"},svg);
+  G.palms.forEach(p=>el("rect",{x:p.x,y:p.y,width:p.w,height:p.h,rx:fw*.9},g));
+  G.paths={};
+  for(const id of FINGERS){
+    const isT=id[0]==="T";
+    G.paths[id]=el("path",{"stroke-width":isT?fw*.95:fw,fill:"none"},g);
+    if(!tip[id]) tip[id]={...G.home[id]}; else Object.assign(tip[id],G.home[id]);
+    goal[id]={...G.home[id]};
+  }
+  G.rings=[el("path",{class:"ringp","stroke-width":fw+5,mask:"url(#ringMask)"},svg),el("path",{class:"ringp","stroke-width":fw*.95+5,mask:"url(#ringMask)"},svg)];
+  aimFingers(); draw();
+}
+const root=id=>id[0]==="T"?G.thumbRoot[id]:G.knuckle[id];
+const seg=id=>`M${root(id).x.toFixed(1)} ${root(id).y.toFixed(1)}L${tip[id].x.toFixed(1)} ${tip[id].y.toFixed(1)}`;
+function draw(){
+  if(!G) return;
+  for(const id of FINGERS) G.paths[id].setAttribute("d",seg(id));
+  for(let i=0;i<2;i++){const id=activeF[i]; const d=id?seg(id):""; G.rings[i].setAttribute("d",d); G.holes[i].setAttribute("d",d);}
+}
+let raf=0;
+function animate(){
+  let moving=false;
+  for(const id of FINGERS){const t=tip[id],g=goal[id]; const dx=g.x-t.x,dy=g.y-t.y;
+    if(Math.abs(dx)+Math.abs(dy)>.3){t.x+=dx*.35;t.y+=dy*.35;moving=true;} else {t.x=g.x;t.y=g.y;}}
+  draw(); raf=moving?requestAnimationFrame(animate):0;
+}
+function aimFingers(){
+  if(!G) return;
+  for(const id of FINGERS) goal[id]={...G.home[id]};
+  activeF=[];
+  const code=CHAR2CODE[S.layout][lines[0]?.[pos]]; if(!code) return;
+  const f=FINGER[code];
+  if(f==="T"){ activeF=["TL","TR"]; }
+  else { activeF=[f]; const c=center(code); goal[f]={x:c.x,y:c.y}; }
+  if(matchMedia("(prefers-reduced-motion: reduce)").matches){ for(const id of FINGERS) Object.assign(tip[id],goal[id]); draw(); return; }
+  if(!raf) raf=requestAnimationFrame(animate);
 }
 
-// ---------- Отрисовка ----------
-const linesEl=document.getElementById("lines"), fingerTxt=document.getElementById("fingerTxt");
-const esc=c=>c==="<"?"&lt;":c==="&"?"&amp;":c;
-let prevTarget=null;
+// ================= Отрисовка =================
+const tilesEl=$("tiles");
 function render(){
-  const L=lines[0]; let h=`<div class="line">`;
+  const L=lines[0]; let h="";
   for(let i=0;i<L.length;i++){
-    const cls=i<pos?("done"+(missed.has(i)?" miss":"")+(i===pos-1&&popNow?" pop":"")):i===pos?("cur"+(badNow?" bad":"")):"";
-    h+=`<span class="c ${cls}">${esc(L[i])}</span>`;
+    const sp=L[i]===" ";
+    let cls="tile"+(sp?" sp":"");
+    if(i<pos) cls+=missed.has(i)?" fix":" ok";
+    if(i===pos-1&&popNow) cls+=" pop";
+    if(i===pos) cls+=" cur"+(badNow?" bad":"");
+    h+=`<div class="${cls}">${sp?"":L[i]}</div>`;
   }
-  h+=`</div><div class="line next">${lines[1]}</div><div class="line next2">${lines[2]}</div>`;
-  linesEl.innerHTML=h;
-  // подсказка
+  tilesEl.innerHTML=h;
+  $("prog").style.width=(100*pos/L.length)+"%";
+  $("next").textContent=lines[1];
+  document.querySelectorAll(".k.target").forEach(k=>k.classList.remove("target"));
   const ch=L[pos], code=CHAR2CODE[S.layout][ch], f=FINGER[code];
-  document.querySelectorAll(".k.target,.k.home").forEach(k=>{k.classList.remove("target","home");k.style.removeProperty("--fc")});
-  document.querySelectorAll(".finger.active").forEach(e=>e.classList.remove("active"));
-  document.querySelectorAll(".flabel.active").forEach(e=>{e.classList.remove("active");e.textContent=e.dataset.home;});
-  if(!code) return;
-  const col=FCOLOR(f);
-  keyEls[code].classList.add("target"); keyEls[code].style.setProperty("--fc",col);
-  const home=HOME[f]; if(home!==code){keyEls[home].classList.add("home");keyEls[home].style.setProperty("--fc",col);}
-  if(f==="T"){ document.getElementById("fg-TL").classList.add("active"); document.getElementById("fg-TR").classList.add("active"); }
-  else { document.getElementById("fg-"+f).classList.add("active"); const lb=document.getElementById("fl-"+f); if(lb){lb.classList.add("active"); lb.textContent=ch;} }
-  const label=ch===" "?"пробел":ch.toUpperCase();
-  fingerTxt.innerHTML=`<strong>${label}</strong> — ${FNAME[f]}`+(home!==code&&f!=="T"?`, затем вернуть на <strong>${keyEls[home].textContent.toUpperCase()}</strong>`:"");
+  if(code){
+    keyEls[code].classList.add("target");
+    const home=HOME[f];
+    const label=ch===" "?"пробел":ch.toUpperCase();
+    $("fingerTxt").innerHTML=`<strong>${label}</strong> — ${FNAME[f]}`+(home&&home!==code?`, затем вернуть на <strong>${keyEls[home].firstChild.textContent}</strong>`:"");
+  }
+  aimFingers();
 }
-
-const $=id=>document.getElementById(id);
 function fmtTime(ms){const s=Math.floor(ms/1000);return Math.floor(s/60)+":"+String(s%60).padStart(2,"0")}
 function updateStats(){
   const rc=recent.reduce((a,b)=>a+b,0);
@@ -371,63 +435,63 @@ function updateStats(){
   $("sBest").textContent="рекорд: "+(best[S.layout]?best[S.layout]+" зн/мин":"—");
 }
 
-// ---------- Ввод ----------
-const layWarn=$("layWarn"); let warnTimer;
-function flashKey(code,cls){const k=keyEls[code]; if(!k) return; k.classList.add(cls); setTimeout(()=>k.classList.remove(cls),cls==="wrong"?220:110);}
+// ================= Ввод =================
+const layWarn=$("layWarn"), overlay=$("overlay"); let warnTimer;
+function flashPress(code){const k=keyEls[code]; if(!k) return; k.classList.add("press"); setTimeout(()=>k.classList.remove("press"),110);}
 document.addEventListener("keydown",e=>{
   if(e.metaKey||e.ctrlKey||e.altKey) return;
-  if(e.key.length!==1) return;           // shift, tab, backspace и т.п. игнорируем
-  e.preventDefault();
-  overlay.hidden=true;
+  if(e.key.length!==1) return;
+  e.preventDefault(); overlay.hidden=true;
   const expected=lines[0][pos], got=e.key.toLowerCase();
-  const now=performance.now(); if(lastT){const dt=Math.min(now-lastT,2000); activeMs+=dt; if(got===expected){recent.push(dt); if(recent.length>40) recent.shift();}} lastT=now;
+  const now=performance.now();
+  if(lastT){const dt=Math.min(now-lastT,2000); activeMs+=dt; if(got===expected){recent.push(dt); if(recent.length>40) recent.shift();}}
+  lastT=now;
 
   if(got===expected){
-    flashKey(e.code,"press");
+    soundKey(expected===" "); flashPress(e.code); setWrong(null);
     const st=keyStats[expected]||(keyStats[expected]=[0,0]); if(!missed.has(pos)) st[0]++;
     typed++; correct++; badNow=false; popNow=true; pos++;
-    if(pos>=lines[0].length){ lines.shift(); lines.push(makeLine()); pos=0; missed=new Set();
+    if(pos>=lines[0].length){ lines.shift(); lines.push(makeLine()); pos=0; missed=new Set(); popNow=false;
       store.set("keyStats_"+S.layout,keyStats); paintHeat(); }
   }else{
-    // другая раскладка: физически та же клавиша, но символ из другого алфавита
     const otherAlpha=S.layout==="ru"?/^[a-z;'\[\],.`]$/:/^[а-яё]$/;
     if(e.code===CHAR2CODE[S.layout][expected] && otherAlpha.test(got)){
       layWarn.hidden=false; layWarn.textContent=S.layout==="ru"?"Включена английская раскладка — переключи на русскую":"Russian layout is on — switch to English";
       clearTimeout(warnTimer); warnTimer=setTimeout(()=>layWarn.hidden=true,2500); return;
     }
-    flashKey(e.code,"wrong");
+    soundError(); setWrong(e.code);
     errPresses++; popNow=false;
     if(!missed.has(pos)){ missed.add(pos); errChars++; const st=keyStats[expected]||(keyStats[expected]=[0,0]); st[1]++; }
-    badNow=false; render(); badNow=true; // перезапуск анимации
+    badNow=false; render(); badNow=true;
   }
   render(); updateStats();
 });
 
-// ---------- Фокус ----------
-const overlay=$("overlay");
-overlay.addEventListener("click",()=>{overlay.hidden=true;window.focus();});
+overlay.addEventListener("click",()=>{overlay.hidden=true;window.focus();audio();});
 window.addEventListener("blur",()=>{overlay.hidden=false;lastT=0;});
 window.addEventListener("focus",()=>{overlay.hidden=true;});
 if(document.hasFocus()) overlay.hidden=true;
 
-// ---------- Управление ----------
+// ================= Управление =================
 function syncControls(){
   document.querySelectorAll("#layoutSeg button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.v===S.layout));
-  const seg=$("levelSeg"); seg.innerHTML="";
+  const segEl=$("levelSeg"); segEl.innerHTML="";
   LEVELS[S.layout].forEach((lv,i)=>{const b=document.createElement("button");b.id="lvl-"+i;b.textContent=lv.n;b.title=lv.l;
-    b.setAttribute("aria-pressed",i===S.level);b.onclick=()=>{S.level=i;store.set("level",i);syncControls();newSession();b.blur();};seg.appendChild(b);});
-  $("tHint").setAttribute("aria-pressed",S.hint); $("tHands").setAttribute("aria-pressed",S.hands);
+    b.setAttribute("aria-pressed",i===S.level);b.onclick=()=>{S.level=i;store.set("level",i);syncControls();newSession();b.blur();};segEl.appendChild(b);});
+  $("tHint").setAttribute("aria-pressed",S.hint); $("tHands").setAttribute("aria-pressed",S.hands); $("tSound").setAttribute("aria-pressed",S.sound);
   document.body.classList.toggle("nohint",!S.hint);
-  handsEl.hidden=!S.hands;
+  svg.style.display=S.hands?"":"none";
 }
 document.querySelectorAll("#layoutSeg button").forEach(b=>b.onclick=()=>{
   S.layout=b.dataset.v; store.set("layout",S.layout); keyStats=store.get("keyStats_"+S.layout,{});
-  buildKb(); buildHands(); syncControls(); newSession(); b.blur();});
-$("tHint").onclick=e=>{S.hint=!S.hint;store.set("hint",S.hint);syncControls();e.currentTarget.blur();};
-$("tHands").onclick=e=>{S.hands=!S.hands;store.set("hands",S.hands);syncControls();e.currentTarget.blur();};
+  buildKb(); syncControls(); newSession(); buildHands(); b.blur();});
+const toggle=(id,key,after)=>$(id).onclick=e=>{S[key]=!S[key];store.set(key,S[key]);syncControls();after&&after();e.currentTarget.blur();};
+toggle("tHint","hint"); toggle("tHands","hands"); toggle("tSound","sound",()=>{if(S.sound){audio();soundKey(false);}});
 $("reset").onclick=e=>{keyStats={};store.set("keyStats_"+S.layout,{});paintHeat();newSession();e.currentTarget.blur();};
 
-buildKb(); buildHands(); syncControls(); newSession();
+buildKb(); syncControls(); newSession(); buildHands();
+let rT; new ResizeObserver(()=>{clearTimeout(rT);rT=setTimeout(()=>{buildHands();measureLineMax();},60);}).observe(kbwrap);
+document.fonts?.ready.then(()=>{buildHands();});
 })();
 </script>
 </body>
