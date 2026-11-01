@@ -219,11 +219,11 @@ function audio(){
   return actx;
 }
 // короткий всплеск шума через полосовой фильтр — «щелчок» переключателя
-function burst(c,t,freq,q,vol,dur){
+function burst(c,t,freq,q,vol,dur,dest=master){
   const n=c.createBufferSource(); n.buffer=noiseBuf;
   const f=c.createBiquadFilter(); f.type="bandpass"; f.frequency.value=freq; f.Q.value=q;
   const g=c.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.002); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
-  n.connect(f).connect(g).connect(master); n.start(t); n.stop(t+dur+.02);
+  n.connect(f).connect(g).connect(dest); n.start(t); n.stop(t+dur+.02);
 }
 // низкий «тук» корпуса — синус с падающей частотой
 function thock(c,t,f0,f1,vol,dur){
@@ -231,19 +231,32 @@ function thock(c,t,f0,f1,vol,dur){
   const g=c.createGain(); g.gain.setValueAtTime(.0001,t); g.gain.exponentialRampToValueAtTime(vol,t+.003); g.gain.exponentialRampToValueAtTime(.0001,t+dur);
   o.connect(g).connect(master); o.start(t); o.stop(t+dur+.02);
 }
+// Щелчок: «модальный» синтез — набор затухающих синусов на резонансах, снятых с образца
+// (низкий корпус 250–470 Гц + звонкие призвуки 1.4–3.4 кГц) и короткий шумовой атакующий щелчок.
+const CLICK_MODES=[[249,.16,.040],[340,.12,.030],[468,.2,.030],[900,.06,.02],[1366,.16,.022],[1905,.1,.016],[2850,.26,.012],[3350,.3,.010],[5600,.14,.007],[7000,.06,.005]];
+function modal(c,dest,t,f,amp,tau){
+  const o=c.createOscillator(); o.frequency.value=f;
+  const g=c.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(amp,t+.0015); g.gain.setTargetAtTime(0,t+.0015,tau);
+  o.connect(g).connect(dest); o.start(t); o.stop(t+tau*8+.01);
+}
+function playClick(c,dest,t,pitch,vol,len){
+  CLICK_MODES.forEach(([f,a,tau])=>modal(c,dest,t,f*pitch*(.98+Math.random()*.04),a*vol,tau*len));
+  burst(c,t,3000*pitch,.45,1.6*vol,.0045,dest); burst(c,t,6500*pitch,.8,.9*vol,.003,dest);
+}
 function soundKey(isSpace){
-  if(!S.sound) return; const c=audio(); if(!c) return; const t=c.currentTime, r=.92+Math.random()*.16;
-  if(isSpace){ burst(c,t,1500*r,1.4,.45,.045); thock(c,t,150,70,.5,.09); burst(c,t+.05,2600*r,2,.08,.02); }
-  else { burst(c,t,3400*r,1.6,.55,.03); thock(c,t,230*r,120,.32,.055); burst(c,t+.042,4200*r,2.5,.09,.015); }
+  if(!S.sound) return; const c=audio(); if(!c) return; const t=c.currentTime+.002, r=.96+Math.random()*.08;
+  if(isSpace) playClick(c,master,t,.82*r,.75,1.35); else playClick(c,master,t,r,.6,1);
+}
+// Ошибка: два чистых тона 784 Гц (соль) + 1244 Гц (ре-диез), атака 4 мс, затухание ~0.3 с
+function playError(c,dest,t){
+  [[783.99,.30],[1244.5,.12]].forEach(([f,a])=>{
+    const o=c.createOscillator(); o.type="sine"; o.frequency.value=f;
+    const g=c.createGain(); g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(a,t+.004); g.gain.setTargetAtTime(0,t+.025,.065);
+    o.connect(g).connect(dest); o.start(t); o.stop(t+.5);
+  });
 }
 function soundError(){
-  if(!S.sound) return; const c=audio(); if(!c) return; const t=c.currentTime;
-  const lp=c.createBiquadFilter(); lp.type="lowpass"; lp.frequency.value=1100; lp.connect(master);
-  [[220,0,.08],[156,.085,.16]].forEach(([f,dt,dur])=>{
-    const o=c.createOscillator(); o.type="square"; o.frequency.value=f;
-    const g=c.createGain(); g.gain.setValueAtTime(.0001,t+dt); g.gain.exponentialRampToValueAtTime(.16,t+dt+.008); g.gain.exponentialRampToValueAtTime(.0001,t+dt+dur);
-    o.connect(g).connect(lp); o.start(t+dt); o.stop(t+dt+dur+.02);
-  });
+  if(!S.sound) return; const c=audio(); if(!c) return; playError(c,master,c.currentTime+.002);
 }
 
 // ================= Генерация слов =================
