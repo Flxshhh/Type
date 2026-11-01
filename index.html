@@ -61,10 +61,15 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .line.next{color:var(--faint)}
 .line.next2{color:var(--faint);opacity:.55}
 .c{position:relative;color:var(--fg)}
-.c.done{color:var(--faint)}
-.c.done.miss{color:var(--err);text-decoration:underline;text-decoration-thickness:2px;text-underline-offset:5px}
+/* набрано с первой попытки — зелёный, с ошибкой — красный */
+.c.done{color:var(--ok);font-weight:500}
+.c.done.miss{color:var(--err);background:color-mix(in srgb,var(--err) 12%,transparent);border-radius:3px}
+.c.pop{animation:pop .35s ease-out}
+@keyframes pop{0%{background:color-mix(in srgb,var(--ok) 45%,transparent);border-radius:3px}100%{background:transparent}}
+.c.miss.pop{animation:popfix .35s ease-out}
+@keyframes popfix{0%{background:color-mix(in srgb,var(--ok) 45%,transparent)}100%{background:color-mix(in srgb,var(--err) 12%,transparent)}}
 .c.cur{background:color-mix(in srgb,var(--accent) 16%,transparent);border-radius:3px;box-shadow:inset 0 -3px 0 var(--accent)}
-.c.cur.bad{background:color-mix(in srgb,var(--err) 22%,transparent);box-shadow:inset 0 -3px 0 var(--err);animation:shake .18s}
+.c.cur.bad{background:var(--err);color:#fff;box-shadow:none;animation:shake .18s}
 @keyframes shake{25%{transform:translateX(-2px)}75%{transform:translateX(2px)}}
 .hintline{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:10px;font-size:13px;color:var(--muted)}
 .hintline strong{color:var(--fg);font-weight:600}
@@ -89,7 +94,7 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 .k.home{outline:1.5px dashed color-mix(in srgb,var(--fc) 55%,transparent);outline-offset:-4px}
 .k.target{background:var(--fc)!important;color:#fff;font-weight:700;z-index:2;box-shadow:0 2px 0 color-mix(in srgb,var(--fc) 60%,#000),0 0 0 4px color-mix(in srgb,var(--fc) 35%,transparent);transform:scale(1.07)}
 .k.target::after{background:#fff}
-.k.press{transform:translateY(2px);box-shadow:none}
+.k.press{transform:translateY(2px);box-shadow:none;background:var(--ok)!important;color:#fff}
 .k.wrong{background:var(--err)!important;color:#fff}
 .k .heat{position:absolute;left:12%;right:12%;top:4px;height:3px;border-radius:2px;background:var(--err)}
 .nohint .k.target{background:var(--key)!important;color:var(--fg);box-shadow:0 2px 0 var(--key-edge);transform:none}
@@ -123,7 +128,7 @@ kbd.plain{font:500 12px var(--mono);background:var(--key);border:1px solid var(-
   .row{gap:3px}.kb{gap:3px;padding:6px}
   .k.mod{padding-left:3px}
 }
-@media (prefers-reduced-motion:reduce){.finger,.k{transition:none}.c.cur.bad{animation:none}}
+@media (prefers-reduced-motion:reduce){.finger,.k{transition:none}.c.cur.bad,.c.pop{animation:none}}
 </style>
 </head>
 <body>
@@ -263,7 +268,7 @@ function makeLine(max=36){
 }
 
 // ---------- Состояние сессии ----------
-let lines=[],pos=0,missed=new Set(),badNow=false;
+let lines=[],pos=0,missed=new Set(),badNow=false,popNow=false;
 let typed=0,errChars=0,errPresses=0,correct=0,activeMs=0,lastT=0,recent=[];
 function newSession(){
   P=pool(); lines=[makeLine(),makeLine(),makeLine()]; pos=0; missed=new Set(); badNow=false;
@@ -331,7 +336,7 @@ let prevTarget=null;
 function render(){
   const L=lines[0]; let h=`<div class="line">`;
   for(let i=0;i<L.length;i++){
-    const cls=i<pos?("done"+(missed.has(i)?" miss":"")):i===pos?("cur"+(badNow?" bad":"")):"";
+    const cls=i<pos?("done"+(missed.has(i)?" miss":"")+(i===pos-1&&popNow?" pop":"")):i===pos?("cur"+(badNow?" bad":"")):"";
     h+=`<span class="c ${cls}">${esc(L[i])}</span>`;
   }
   h+=`</div><div class="line next">${lines[1]}</div><div class="line next2">${lines[2]}</div>`;
@@ -380,7 +385,7 @@ document.addEventListener("keydown",e=>{
   if(got===expected){
     flashKey(e.code,"press");
     const st=keyStats[expected]||(keyStats[expected]=[0,0]); if(!missed.has(pos)) st[0]++;
-    typed++; correct++; badNow=false; pos++;
+    typed++; correct++; badNow=false; popNow=true; pos++;
     if(pos>=lines[0].length){ lines.shift(); lines.push(makeLine()); pos=0; missed=new Set();
       store.set("keyStats_"+S.layout,keyStats); paintHeat(); }
   }else{
@@ -391,7 +396,7 @@ document.addEventListener("keydown",e=>{
       clearTimeout(warnTimer); warnTimer=setTimeout(()=>layWarn.hidden=true,2500); return;
     }
     flashKey(e.code,"wrong");
-    errPresses++;
+    errPresses++; popNow=false;
     if(!missed.has(pos)){ missed.add(pos); errChars++; const st=keyStats[expected]||(keyStats[expected]=[0,0]); st[1]++; }
     badNow=false; render(); badNow=true; // перезапуск анимации
   }
