@@ -48,20 +48,22 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
 /* --- плитки букв --- */
 .stage{position:relative;padding:8px 0 4px}
-.tiles{--t:clamp(26px,4.3vw,48px);display:flex;flex-wrap:wrap;justify-content:center;gap:7px 6px;padding-bottom:22px;min-height:calc(var(--t)*1.15 + 22px)}
-.tile{position:relative;width:var(--t);height:calc(var(--t)*1.15);border-radius:calc(var(--t)*.22);
+.tiles{--t:clamp(20px,2.9vw,34px);display:flex;flex-direction:column;align-items:center;gap:24px}
+.trow{display:flex;flex-wrap:wrap;justify-content:center;gap:5px 5px;min-height:calc(var(--t)*1.18)}
+.trow.later{opacity:.55}.trow.later2{opacity:.3}
+.tile{position:relative;width:var(--t);height:calc(var(--t)*1.18);border-radius:calc(var(--t)*.22);
   display:flex;align-items:center;justify-content:center;font:500 calc(var(--t)*.56) var(--mono);
   color:var(--muted);background:color-mix(in srgb,var(--key) 70%,transparent);border:2px solid color-mix(in srgb,var(--key-line) 80%,transparent)}
 .tile.sp{width:calc(var(--t)*.55);background:transparent;border-color:transparent}
 .tile.sp::before{content:"";position:absolute;bottom:28%;left:22%;right:22%;height:2px;border-radius:2px;background:var(--faint)}
 .tile.cur{color:var(--fg);border-color:var(--accent);background:color-mix(in srgb,var(--accent) 16%,var(--key));box-shadow:0 0 18px color-mix(in srgb,var(--accent) 35%,transparent)}
-.tile.cur::after{content:"";position:absolute;left:12%;right:12%;bottom:-11px;height:4px;border-radius:3px;background:var(--accent);box-shadow:0 0 10px var(--accent)}
+.tile.cur::after{content:"";position:absolute;left:12%;right:12%;bottom:-10px;height:3px;border-radius:3px;background:var(--accent);box-shadow:0 0 10px var(--accent)}
 .tile.sp.cur{border-color:var(--accent)}
 .tile.cur.bad{color:var(--err);border-color:var(--err);background:color-mix(in srgb,var(--err) 18%,var(--key));box-shadow:0 0 18px color-mix(in srgb,var(--err) 45%,transparent);animation:shake .18s}
 .tile.cur.bad::after{background:var(--err);box-shadow:0 0 10px var(--err)}
 .tile.ok{color:var(--ok);border-color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,var(--key));box-shadow:0 0 12px color-mix(in srgb,var(--ok) 25%,transparent)}
 .tile.fix{color:var(--fix);border-color:var(--fix);background:color-mix(in srgb,var(--fix) 10%,var(--key));box-shadow:0 0 12px color-mix(in srgb,var(--fix) 25%,transparent)}
-.tile.ok::after,.tile.fix::after{content:"✓";position:absolute;bottom:-21px;left:0;right:0;text-align:center;font:700 14px var(--body)}
+.tile.ok::after,.tile.fix::after{content:"✓";position:absolute;bottom:-19px;left:0;right:0;text-align:center;font:700 12px var(--body)}
 .tile.sp.ok,.tile.sp.fix{background:transparent;box-shadow:none;border-color:transparent}
 .tile.sp.ok::before{background:var(--ok)}.tile.sp.fix::before{background:var(--fix)}
 .tile.sp.ok::after,.tile.sp.fix::after{content:none}
@@ -69,9 +71,8 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 @keyframes pop{0%{transform:scale(1.14)}100%{transform:scale(1)}}
 @keyframes shake{25%{transform:translateX(-3px)}75%{transform:translateX(3px)}}
 
-.progress{height:3px;border-radius:2px;background:color-mix(in srgb,var(--key-line) 60%,transparent);max-width:760px;margin:6px auto 0;overflow:hidden}
+.progress{height:3px;border-radius:2px;background:color-mix(in srgb,var(--key-line) 60%,transparent);max-width:760px;margin:2px auto 0;overflow:hidden}
 .progress i{display:block;height:100%;width:0;background:var(--accent);box-shadow:0 0 8px var(--accent);transition:width .12s}
-.next{text-align:center;font:400 clamp(14px,2vw,18px) var(--mono);color:var(--faint);margin-top:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .hintline{display:flex;flex-wrap:wrap;justify-content:center;gap:8px 20px;margin-top:10px;font-size:13px;color:var(--muted)}
 .hintline strong{color:var(--fg);font-weight:600}
 .warn{color:var(--err);font-weight:500}
@@ -79,21 +80,23 @@ button:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
   background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(3px);cursor:pointer;font-weight:500;text-align:center;padding:16px}
 
 /* --- клавиатура + руки поверх --- */
-.kbwrap{position:relative;width:100%;max-width:880px;margin:0 auto;overflow:hidden;padding-bottom:clamp(40px,9vw,96px);border-radius:16px}
-.kb{position:relative;background:color-mix(in srgb,var(--panel) 80%,#000);border:1.5px solid var(--key-line);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:6px}
-.row{display:flex;gap:6px}
-.k{flex:1 1 0;min-width:0;height:clamp(26px,5vw,48px);background:var(--key);border:1.5px solid color-mix(in srgb,var(--key-line) 75%,transparent);border-radius:8px;
-  display:flex;align-items:center;justify-content:center;font:600 clamp(10px,1.7vw,17px) var(--body);color:var(--key-text);position:relative;transition:transform .06s}
-.k.mod{font-size:clamp(8px,1.1vw,11px);color:var(--muted);font-weight:500;justify-content:flex-start;padding-left:8px}
-.k.bump::after{content:"";position:absolute;bottom:5px;left:50%;width:10px;height:2px;margin-left:-5px;border-radius:2px;background:currentColor;opacity:.55}
+.kbwrap{position:relative;width:100%;max-width:620px;margin:0 auto;overflow:hidden;padding-bottom:clamp(34px,6vw,64px);border-radius:14px}
+.kb{position:relative;background:color-mix(in srgb,var(--panel) 80%,#000);border:1.5px solid var(--key-line);border-radius:14px;padding:7px;display:flex;flex-direction:column;gap:4px}
+.row{display:flex;gap:4px}
+.k{flex:1 1 0;min-width:0;height:clamp(20px,3.6vw,34px);background:var(--key);border:1.5px solid color-mix(in srgb,var(--key-line) 75%,transparent);border-radius:6px;
+  display:flex;align-items:center;justify-content:center;font:600 clamp(9px,1.25vw,13px) var(--body);color:var(--key-text);position:relative;transition:transform .06s}
+.k.mod{font-size:clamp(7px,.85vw,9px);color:var(--muted);font-weight:500;justify-content:flex-start;padding-left:6px}
+.k.bump::after{content:"";position:absolute;bottom:3px;left:50%;width:8px;height:2px;margin-left:-5px;border-radius:2px;background:currentColor;opacity:.55}
 .k.target{background:var(--accent);color:#06203a;border-color:var(--accent);box-shadow:0 0 16px color-mix(in srgb,var(--accent) 60%,transparent);z-index:1}
 .k.wrongstay{background:var(--err)!important;color:#fff!important;border-color:var(--err)!important;box-shadow:0 0 16px color-mix(in srgb,var(--err) 60%,transparent)}
 .k.press{transform:translateY(2px);background:var(--ok)!important;color:#06261c!important;border-color:var(--ok)!important}
 .k .heat{position:absolute;left:14%;right:14%;top:3px;height:3px;border-radius:2px;background:var(--err)}
 .nohint .k.target{background:var(--key);color:var(--key-text);border-color:color-mix(in srgb,var(--key-line) 75%,transparent);box-shadow:none}
 #handsSvg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2}
-.hand{fill:var(--hand);stroke:var(--hand);stroke-linecap:round;stroke-linejoin:round}
-.ringp{fill:none;stroke:var(--ring);stroke-linecap:round;filter:drop-shadow(0 0 4px color-mix(in srgb,var(--ring) 70%,transparent))}
+.hand{fill:var(--hand)}
+.crease{fill:none;stroke:#5d6f9c;stroke-width:1.1;stroke-linecap:round;opacity:.8}
+.nail{fill:#eef3ff;stroke:#8193bd;stroke-width:.8}
+.ringp{fill:none;stroke:var(--ring);stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round;filter:drop-shadow(0 0 4px color-mix(in srgb,var(--ring) 70%,transparent))}
 .nohint .ringp{display:none}
 
 .foot{display:flex;flex-wrap:wrap;gap:10px;justify-content:space-between;align-items:center;font-size:13px;color:var(--muted)}
@@ -105,9 +108,9 @@ kbd.plain{font:500 12px var(--mono);background:var(--key);border:1px solid var(-
 @media (max-width:640px){
   .stats{grid-template-columns:repeat(3,minmax(0,1fr))}
   .stat:nth-child(n+4){display:none}
-  .row{gap:3px}.kb{gap:3px;padding:6px}
+  .row{gap:2px}.kb{gap:2px;padding:5px}
   .k{border-radius:5px}.k.mod{padding-left:3px}
-  .tiles{gap:6px 4px}
+  .trow{gap:4px 3px}
 }
 @media (prefers-reduced-motion:reduce){.k{transition:none}.tile.cur.bad,.tile.pop{animation:none}}
 </style>
@@ -139,8 +142,7 @@ kbd.plain{font:500 12px var(--mono);background:var(--key);border:1px solid var(-
 
   <section class="stage" id="stage">
     <div class="tiles" id="tiles" aria-live="off"></div>
-    <div class="progress"><i id="prog"></i></div>
-    <div class="next" id="next"></div>
+    <div class="progress" style="margin-top:22px"><i id="prog"></i></div>
     <div class="hintline">
       <span id="fingerTxt"></span>
       <span id="layWarn" class="warn" hidden></span>
@@ -276,16 +278,15 @@ function makeLine(){
 }
 function measureLineMax(){ // сколько плиток помещается в ряд
   const tiles=$("tiles"), probe=document.createElement("div"); probe.className="tile"; probe.style.visibility="hidden";
-  tiles.appendChild(probe); const tw=probe.offsetWidth; probe.remove();
-  const gap=parseFloat(getComputedStyle(tiles).columnGap)||6;
-  lineMax=Math.max(10,Math.min(30,Math.floor((tiles.clientWidth+gap)/(tw+gap))));
+  const row=document.createElement("div"); row.className="trow"; row.appendChild(probe); tiles.appendChild(row); const tw=probe.offsetWidth; const gap=parseFloat(getComputedStyle(row).columnGap)||5; row.remove();
+  lineMax=Math.max(10,Math.min(40,Math.floor((tiles.clientWidth+gap)/(tw+gap))));
 }
 
 // ================= Сессия =================
 let lines=[],pos=0,missed=new Set(),badNow=false,popNow=false,wrongCode=null;
 let typed=0,errChars=0,errPresses=0,correct=0,activeMs=0,lastT=0,recent=[];
 function newSession(){
-  measureLineMax(); P=pool(); lines=[makeLine(),makeLine()]; pos=0; missed=new Set(); badNow=false; popNow=false; setWrong(null);
+  measureLineMax(); P=pool(); lines=[makeLine(),makeLine(),makeLine()]; pos=0; missed=new Set(); badNow=false; popNow=false; setWrong(null);
   typed=errChars=errPresses=correct=activeMs=0; lastT=0; recent=[];
   render(); updateStats();
 }
@@ -332,50 +333,75 @@ function center(code){const w=kbwrap.getBoundingClientRect(),r=keyEls[code].getB
   return {x:r.left-w.left+r.width/2,y:r.top-w.top+r.height/2,w:r.width,h:r.height,l:r.left-w.left};}
 function buildHands(){
   const W=kbwrap.clientWidth,H=kbwrap.clientHeight; svg.setAttribute("viewBox",`0 0 ${W} ${H}`); svg.innerHTML="";
-  const f=center("KeyF"), kw=f.w, kh=f.h, fw=kw*.74, sp=center("Space");
-  const LEN={5:2.5,4:3.0,3:3.2,2:3.0}, DX={5:.5,4:.25,3:.05,2:-.12};
-  G={fw,knuckle:{},home:{},thumbRoot:{},palms:[]};
+  const f=center("KeyF"), kw=f.w, kh=f.h, fw=kw*.82, sp=center("Space");
+  const LEN={5:2.6,4:3.15,3:3.35,2:3.1}, DX={5:.55,4:.28,3:.06,2:-.12}, WT={5:.78,4:.86,3:.9,2:.92};
+  G={fw,kh,knuckle:{},home:{},thumbRoot:{},wt:{},wb:{}};
   for(const id of ["L5","L4","L3","L2","R2","R3","R4","R5"]){
     const h=center(HOME[id]), n=+id[1], s=id[0]==="L"?1:-1;
-    G.home[id]={x:h.x,y:h.y};
+    G.home[id]={x:h.x,y:h.y+kh*.08};
     G.knuckle[id]={x:h.x+DX[n]*kw*s,y:h.y+LEN[n]*kh};
+    G.wt[id]=fw*WT[n]; G.wb[id]=fw*WT[n]*1.18;
   }
-  for(const s of ["L","R"]){
-    const ids=s==="L"?["L5","L4","L3","L2"]:["R2","R3","R4","R5"];
-    const xs=ids.map(i=>G.knuckle[i].x), top=Math.min(...ids.map(i=>G.knuckle[i].y))-kh*.15;
-    G.palms.push({x:Math.min(...xs)-fw*.75,y:top,w:Math.max(...xs)-Math.min(...xs)+fw*1.5,h:H-top+kh*2});
-    const idx=G.knuckle[s+"2"], sg=s==="L"?1:-1;
-    G.thumbRoot["T"+s]={x:idx.x+sg*fw*.2,y:idx.y+kh*1.1};
-    G.home["T"+s]={x:sp.l+sp.w*(s==="L"?.3:.7),y:sp.y};
-  }
-  // маска: кольцо-контур вокруг активного пальца
-  const defs=el("defs",{},svg), mask=el("mask",{id:"ringMask",maskUnits:"userSpaceOnUse",x:0,y:0,width:W,height:H},defs);
-  el("rect",{x:0,y:0,width:W,height:H,fill:"#fff"},mask);
-  G.holes=[el("path",{stroke:"#000","stroke-width":fw,"stroke-linecap":"round",fill:"none"},mask),el("path",{stroke:"#000","stroke-width":fw*.95,"stroke-linecap":"round",fill:"none"},mask)];
+  const defs=el("defs",{},svg);
   // плавное растворение ладоней к нижнему краю
   const kbB=$("kb").offsetTop+$("kb").offsetHeight;
   const lg=el("linearGradient",{id:"fadeG",gradientUnits:"userSpaceOnUse",x1:0,y1:kbB-kh*.3,x2:0,y2:H},defs);
   el("stop",{offset:0,"stop-color":"#fff"},lg); el("stop",{offset:1,"stop-color":"#000"},lg);
   const fm=el("mask",{id:"fadeMask",maskUnits:"userSpaceOnUse",x:0,y:0,width:W,height:H},defs);
   el("rect",{x:0,y:0,width:W,height:H,fill:"url(#fadeG)"},fm);
-  const g=el("g",{class:"hand",opacity:.5,mask:"url(#fadeMask)"},svg);
-  G.palms.forEach(p=>el("rect",{x:p.x,y:p.y,width:p.w,height:p.h,rx:fw*.9},g));
-  G.paths={};
+  const g=el("g",{class:"hand",opacity:.55,mask:"url(#fadeMask)"},svg);
+  for(const s of ["L","R"]){
+    const sg=s==="L"?1:-1, K5=G.knuckle[s+"5"], K4=G.knuckle[s+"4"], K3=G.knuckle[s+"3"], K2=G.knuckle[s+"2"];
+    // ладонь: верх по костяшкам, к запястью сужается, со стороны большого пальца — бугор
+    const p=[
+      `M${K5.x-sg*fw*.62} ${K5.y+fw*.5}`,
+      `Q${K5.x-sg*fw*.55} ${K5.y-fw*.25} ${K5.x} ${K5.y-fw*.2}`,
+      `Q${(K4.x+K3.x)/2} ${Math.min(K4.y,K3.y)-fw*.55} ${K2.x} ${K2.y-fw*.3}`,
+      `Q${K2.x+sg*fw*.75} ${K2.y-fw*.2} ${K2.x+sg*fw*.8} ${K2.y+kh*.8}`,
+      `Q${K2.x+sg*fw*1.05} ${K2.y+kh*1.9} ${K2.x+sg*fw*.25} ${H+kh}`,
+      `L${K5.x+sg*fw*.55} ${H+kh}`,
+      `Q${K5.x-sg*fw*.75} ${K5.y+kh*1.6} ${K5.x-sg*fw*.62} ${K5.y+fw*.5}Z`];
+    el("path",{d:p.join("")},g);
+    G.thumbRoot["T"+s]={x:K2.x+sg*fw*.55,y:K2.y+kh*1.25};
+    G.home["T"+s]={x:sp.l+sp.w*(s==="L"?.3:.7),y:sp.y};
+    G.wt["T"+s]=fw*1.05; G.wb["T"+s]=fw*1.45;
+  }
+  G.parts={};
   for(const id of FINGERS){
-    const isT=id[0]==="T";
-    G.paths[id]=el("path",{"stroke-width":isT?fw*.95:fw,fill:"none"},g);
+    const fg=el("g",{},g);
+    G.parts[id]={body:el("path",{},fg),c1:el("path",{class:"crease"},fg),c2:el("path",{class:"crease"},fg),nail:el("ellipse",{class:"nail"},fg)};
     if(!tip[id]) tip[id]={...G.home[id]}; else Object.assign(tip[id],G.home[id]);
     goal[id]={...G.home[id]};
   }
-  G.rings=[el("path",{class:"ringp","stroke-width":fw+5,mask:"url(#ringMask)"},svg),el("path",{class:"ringp","stroke-width":fw*.95+5,mask:"url(#ringMask)"},svg)];
+  G.rings=[el("path",{class:"ringp"},svg),el("path",{class:"ringp"},svg)];
   aimFingers(); draw();
 }
 const root=id=>id[0]==="T"?G.thumbRoot[id]:G.knuckle[id];
-const seg=id=>`M${root(id).x.toFixed(1)} ${root(id).y.toFixed(1)}L${tip[id].x.toFixed(1)} ${tip[id].y.toFixed(1)}`;
+const P2=(x,y)=>x.toFixed(1)+" "+y.toFixed(1);
+// Палец: сужается от основания к кончику, по бокам лёгкая выпуклость суставов, кончик — полукруг
+function fingerGeom(id){
+  const B=root(id), T=tip[id], wb=G.wb[id], wt=G.wt[id];
+  let dx=T.x-B.x, dy=T.y-B.y; const L=Math.hypot(dx,dy)||1; const ux=dx/L, uy=dy/L, nx=-uy, ny=ux;
+  const rt=wt/2, Cx=T.x-ux*rt*.6, Cy=T.y-uy*rt*.6; // центр подушечки
+  const at=(t,w,side)=>[B.x+dx*t+nx*w/2*side, B.y+dy*t+ny*w/2*side];
+  const b1=at(0,wb,1), b2=at(0,wb,-1), j1=at(.5,(wb+wt)/2*1.08,1), j2=at(.5,(wb+wt)/2*1.08,-1);
+  const c1=[Cx+nx*rt,Cy+ny*rt], c2=[Cx-nx*rt,Cy-ny*rt], k=rt*1.33;
+  const d=`M${P2(...b1)}Q${P2(...j1)} ${P2(...c1)}C${P2(c1[0]+ux*k,c1[1]+uy*k)} ${P2(c2[0]+ux*k,c2[1]+uy*k)} ${P2(...c2)}Q${P2(...j2)} ${P2(...b2)}Z`;
+  const s1=at(.3,wb+(wt-wb)*.3,1), s2=at(.3,wb+(wt-wb)*.3,-1);
+  const ring=`M${P2(...s1)}Q${P2(...at(.62,(wb+wt)/2*1.06,1))} ${P2(...c1)}C${P2(c1[0]+ux*k,c1[1]+uy*k)} ${P2(c2[0]+ux*k,c2[1]+uy*k)} ${P2(...c2)}Q${P2(...at(.62,(wb+wt)/2*1.06,-1))} ${P2(...s2)}`;
+  const crease=t=>{const w=(wb+(wt-wb)*t)*.32, px=B.x+dx*t, py=B.y+dy*t;
+    return `M${P2(px+nx*w,py+ny*w)}Q${P2(px+ux*2,py+uy*2)} ${P2(px-nx*w,py-ny*w)}`;};
+  const isT=id[0]==="T";
+  return {d,ring,c1:crease(isT?.62:.55),c2:crease(isT?.62:.77),nx:Cx-ux*rt*.35,ny:Cy-uy*rt*.35,rx:rt*.6,ry:rt*.78,ang:Math.atan2(uy,ux)*180/Math.PI-90,c2on:!isT};
+}
 function draw(){
   if(!G) return;
-  for(const id of FINGERS) G.paths[id].setAttribute("d",seg(id));
-  for(let i=0;i<2;i++){const id=activeF[i]; const d=id?seg(id):""; G.rings[i].setAttribute("d",d); G.holes[i].setAttribute("d",d);}
+  const geo={};
+  for(const id of FINGERS){const q=fingerGeom(id),P=G.parts[id]; geo[id]=q;
+    P.body.setAttribute("d",q.d); P.c1.setAttribute("d",q.c1); P.c2.setAttribute("d",q.c2on?q.c2:"");
+    P.nail.setAttribute("cx",q.nx.toFixed(1)); P.nail.setAttribute("cy",q.ny.toFixed(1)); P.nail.setAttribute("rx",q.rx.toFixed(1)); P.nail.setAttribute("ry",q.ry.toFixed(1));
+    P.nail.setAttribute("transform",`rotate(${q.ang.toFixed(1)} ${q.nx.toFixed(1)} ${q.ny.toFixed(1)})`);}
+  for(let i=0;i<2;i++){const id=activeF[i]; G.rings[i].setAttribute("d",id?geo[id].ring:"");}
 }
 let raf=0;
 function animate(){
@@ -391,7 +417,7 @@ function aimFingers(){
   const code=CHAR2CODE[S.layout][lines[0]?.[pos]]; if(!code) return;
   const f=FINGER[code];
   if(f==="T"){ activeF=["TL","TR"]; }
-  else { activeF=[f]; const c=center(code); goal[f]={x:c.x,y:c.y}; }
+  else { activeF=[f]; const c=center(code); goal[f]={x:c.x,y:c.y+G.kh*.08}; }
   if(matchMedia("(prefers-reduced-motion: reduce)").matches){ for(const id of FINGERS) Object.assign(tip[id],goal[id]); draw(); return; }
   if(!raf) raf=requestAnimationFrame(animate);
 }
@@ -399,7 +425,7 @@ function aimFingers(){
 // ================= Отрисовка =================
 const tilesEl=$("tiles");
 function render(){
-  const L=lines[0]; let h="";
+  const L=lines[0]; let h='<div class="trow">';
   for(let i=0;i<L.length;i++){
     const sp=L[i]===" ";
     let cls="tile"+(sp?" sp":"");
@@ -408,9 +434,10 @@ function render(){
     if(i===pos) cls+=" cur"+(badNow?" bad":"");
     h+=`<div class="${cls}">${sp?"":L[i]}</div>`;
   }
+  h+="</div>";
+  [1,2].forEach(n=>{ h+=`<div class="trow ${n===1?"later":"later2"}">`+[...lines[n]].map(c=>c===" "?'<div class="tile sp"></div>':`<div class="tile">${c}</div>`).join("")+"</div>"; });
   tilesEl.innerHTML=h;
   $("prog").style.width=(100*pos/L.length)+"%";
-  $("next").textContent=lines[1];
   document.querySelectorAll(".k.target").forEach(k=>k.classList.remove("target"));
   const ch=L[pos], code=CHAR2CODE[S.layout][ch], f=FINGER[code];
   if(code){
